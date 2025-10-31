@@ -1,0 +1,7 @@
+cache/*
+build/*
+
+*.local.*
+*.local
+
+dist/*

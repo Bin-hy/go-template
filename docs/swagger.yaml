@@ -1,0 +1,199 @@
+basePath: /
+definitions:
+  entity.File:
+    properties:
+      bucket:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      isDeleted:
+        type: boolean
+      mimeType:
+        type: string
+      objectName:
+        type: string
+      originalName:
+        type: string
+      size:
+        type: integer
+      uploaderID:
+        type: integer
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: 该项目演示了使用 Gin + Zap + GORM + MinIO 的基础模板，并提供文件上传/下载接口。
+  title: Go Template API
+  version: "1.0"
+paths:
+  /api/v1/files:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传文件到指定 Bucket，自动创建不存在的 Bucket，并返回文件元数据
+      parameters:
+      - description: MinIO Bucket 名称
+        in: formData
+        name: bucket
+        required: true
+        type: string
+      - description: 要上传的文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.File'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上传文件
+      tags:
+      - Files
+  /api/v1/files/{id}:
+    delete:
+      description: 根据文件记录 ID，将其标记为已删除；已删除的文件下载接口将返回 410
+      parameters:
+      - description: 文件记录 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 删除文件（软删除）
+      tags:
+      - Files
+    get:
+      description: 根据文件记录 ID，返回存储的文件元信息
+      parameters:
+      - description: 文件记录 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.File'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 获取文件元数据
+      tags:
+      - Files
+  /api/v1/files/{id}/download:
+    get:
+      description: 根据文件记录 ID，从 MinIO 流式下载文件
+      parameters:
+      - description: 文件记录 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "410":
+          description: Gone
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 下载文件
+      tags:
+      - Files
+  /api/v1/files/{id}/hard-delete:
+    delete:
+      description: 根据文件记录 ID，从 MinIO 删除对象，并删除数据库记录（不可恢复）
+      parameters:
+      - description: 文件记录 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 物理删除文件
+      tags:
+      - Files
+  /healthz:
+    get:
+      description: 返回服务运行状态
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: 健康检查
+      tags:
+      - Health
+schemes:
+- http
+swagger: "2.0"
