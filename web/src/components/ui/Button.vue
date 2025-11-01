@@ -5,11 +5,15 @@ import { computed } from 'vue'
 type Variant = 'default' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link'
 type Size = 'sm' | 'md' | 'lg'
 
+import type { Component } from 'vue'
 const props = defineProps<{
   variant?: Variant
   size?: Size
-  as?: string
+  as?: string | Component
   disabled?: boolean
+  // 透传路由/链接属性（用于作为 RouterLink 或 a 标签时不触发类型报错）
+  to?: unknown
+  href?: string
 }>()
 
 const buttonVariants = cva(
