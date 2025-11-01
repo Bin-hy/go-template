@@ -181,6 +181,119 @@ paths:
       summary: 物理删除文件
       tags:
       - Files
+  /api/v1/files/{id}/presigned:
+    get:
+      parameters:
+      - description: 文件记录 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 过期时间秒，默认600
+        in: query
+        name: expiry
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 获取预签名下载链接
+      tags:
+      - Files
+  /api/v1/files/bucket/{bucket}:
+    get:
+      parameters:
+      - description: Bucket 名称
+        in: path
+        name: bucket
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.File'
+            type: array
+      summary: 根据 Bucket 获取文件列表
+      tags:
+      - Files
+  /api/v1/files/multipart/chunk:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 初始化返回的会话ID
+        in: formData
+        name: upload_id
+        required: true
+        type: string
+      - description: 当前分片序号（从1开始）
+        in: formData
+        name: chunk_index
+        required: true
+        type: integer
+      - description: 分片总数
+        in: formData
+        name: total_chunks
+        required: true
+        type: integer
+      - description: 分片文件
+        in: formData
+        name: chunk
+        required: true
+        type: file
+      - description: Bucket（可冗余）
+        in: formData
+        name: bucket
+        type: string
+      - description: 原始文件名（可冗余）
+        in: formData
+        name: filename
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上传分片
+      tags:
+      - Files
+  /api/v1/files/multipart/init:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 返回会话ID，前端每个分片携带该ID上传，服务端缓存分片后合并
+      parameters:
+      - description: Bucket 名称
+        in: formData
+        name: bucket
+        required: true
+        type: string
+      - description: 原始文件名
+        in: formData
+        name: filename
+        required: true
+        type: string
+      - description: MIME 类型
+        in: formData
+        name: mime_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 初始化分块上传
+      tags:
+      - Files
   /healthz:
     get:
       description: 返回服务运行状态
