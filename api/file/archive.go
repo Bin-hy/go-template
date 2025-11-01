@@ -34,14 +34,7 @@ import (
 // @Failure 500 {object} map[string]interface{}
 // @Router /api/v1/files/archive [post]
 func UploadArchive(c *gin.Context) {
-    dbI, okDB := c.Get("db")
-    minioI, okMinio := c.Get("minio")
-    if !okDB || !okMinio {
-        c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "storage or database not initialized"})
-        return
-    }
-    db := dbI.(*gorm.DB)
-    mc := minioI.(*minio.Client)
+    // 依赖通过 processArchiveFile 内部获取
 
     bucket := c.PostForm("bucket")
     if bucket == "" {
@@ -88,6 +81,13 @@ func UploadArchive(c *gin.Context) {
 
     // 校验/创建 Bucket
     ctx := context.Background()
+    // 校验/创建 Bucket（使用 MinIO 客户端）
+    minioI, okMinio := c.Get("minio")
+    if !okMinio {
+        c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "storage not initialized"})
+        return
+    }
+    mc := minioI.(*minio.Client)
     exists, err := mc.BucketExists(ctx, bucket)
     if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": fmt.Sprintf("bucket check error: %v", err)})
