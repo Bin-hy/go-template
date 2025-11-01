@@ -44,3 +44,9 @@ export async function listBuckets() {
   const { data } = await api.get('/api/v1/files/buckets')
   return data
 }
+
+// 根据 Bucket 获取文件列表
+export async function listFilesByBucket(bucket: string) {
+  const { data } = await api.get(`/api/v1/files/bucket/${encodeURIComponent(bucket)}`)
+  return data
+}

@@ -6,6 +6,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/health', name: 'health', component: () => import('../pages/Health.vue') },
   { path: '/files', name: 'files', component: () => import('../pages/Files.vue') },
   { path: '/upload-chunks', name: 'upload-chunks', component: () => import('../pages/ChunkUpload.vue') },
+  { path: '/buckets', name: 'buckets', component: () => import('../pages/BucketBrowser.vue') },
   { path: '/swagger', name: 'swagger', component: () => import('../pages/Swagger.vue') },
 ]
 
