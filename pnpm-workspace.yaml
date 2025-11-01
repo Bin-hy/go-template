@@ -1,2 +1,6 @@
 packages:
-  - "web"
+  - web
+
+ignoredBuiltDependencies:
+  - esbuild
+  - vue-demi
