@@ -14,6 +14,8 @@ func RegisterRoutes(v1 *gin.RouterGroup) {
         files.POST("/multipart/chunk", UploadChunk)
         // 根据 bucketName 获取文件列表
         files.GET("/bucket/:bucket", ListFilesByBucket)
+        // 获取所有 Buckets 列表
+        files.GET("/buckets", ListBuckets)
         // 获取直连 MinIO 的预签名下载链接（用于提升下载速度）
         files.GET(":id/presigned", GetPresignedDownload)
         files.DELETE(":id", DeleteFile)

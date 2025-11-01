@@ -569,6 +569,33 @@ func ListFilesByBucket(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 0, "msg": "success", "data": list})
 }
 
+// ListBuckets 获取所有 MinIO Buckets 列表
+// @Summary 获取所有 Buckets 列表
+// @Tags Files
+// @Produce json
+// @Success 200 {array} map[string]interface{}
+// @Failure 500 {object} map[string]interface{}
+// @Router /api/v1/files/buckets [get]
+func ListBuckets(c *gin.Context) {
+    minioI, okMinio := c.Get("minio")
+    if !okMinio {
+        c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": "storage not initialized"})
+        return
+    }
+    mc := minioI.(*minio.Client)
+    ctx := context.Background()
+    buckets, err := mc.ListBuckets(ctx)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": fmt.Sprintf("list buckets error: %v", err)})
+        return
+    }
+    list := make([]gin.H, 0, len(buckets))
+    for _, b := range buckets {
+        list = append(list, gin.H{"name": b.Name, "createdAt": b.CreationDate})
+    }
+    c.JSON(http.StatusOK, gin.H{"code": 0, "msg": "success", "data": list})
+}
+
 // GetPresignedDownload 返回 MinIO 的预签名下载链接，前端可直连 MinIO 下载以提升速度
 // @Summary 获取预签名下载链接
 // @Tags Files
