@@ -38,3 +38,9 @@ export async function hardDeleteFile(id: string | number) {
   const { data } = await api.delete(`/api/v1/files/${id}/hard-delete`)
   return data
 }
+
+// 获取所有 Bucket 列表
+export async function listBuckets() {
+  const { data } = await api.get('/api/v1/files/buckets')
+  return data
+}
