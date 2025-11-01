@@ -68,6 +68,171 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/files/archive": {
+            "post": {
+                "description": "接收 zip 压缩包，解压后将位于根目录或一级目录内的文件上传到指定 Bucket；多级嵌套（深层目录）文件将被跳过。",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "上传压缩包并存储其中的文件（跳过深层目录）",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "MinIO Bucket 名称",
+                        "name": "bucket",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "zip 压缩包文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/files/archive/multipart/chunk": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "上传压缩包分片",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "初始化返回的会话ID",
+                        "name": "upload_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前分片序号（从1开始）",
+                        "name": "chunk_index",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分片总数",
+                        "name": "total_chunks",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "分片文件",
+                        "name": "chunk",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bucket（可冗余）",
+                        "name": "bucket",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "原始文件名（可冗余）",
+                        "name": "filename",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/files/archive/multipart/init": {
+            "post": {
+                "description": "返回会话ID，后续使用 /api/v1/files/archive/multipart/chunk 上传分片",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "初始化压缩包分块上传",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bucket 名称",
+                        "name": "bucket",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "原始压缩包文件名",
+                        "name": "filename",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "MIME 类型",
+                        "name": "mime_type",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/files/bucket/{bucket}": {
             "get": {
                 "produces": [
