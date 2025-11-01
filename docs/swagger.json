@@ -65,6 +65,148 @@
                 }
             }
         },
+        "/api/v1/files/bucket/{bucket}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "根据 Bucket 获取文件列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bucket 名称",
+                        "name": "bucket",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.File"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/files/multipart/chunk": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "上传分片",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "初始化返回的会话ID",
+                        "name": "upload_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "当前分片序号（从1开始）",
+                        "name": "chunk_index",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分片总数",
+                        "name": "total_chunks",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "分片文件",
+                        "name": "chunk",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bucket（可冗余）",
+                        "name": "bucket",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "原始文件名（可冗余）",
+                        "name": "filename",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/files/multipart/init": {
+            "post": {
+                "description": "返回会话ID，前端每个分片携带该ID上传，服务端缓存分片后合并",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "初始化分块上传",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bucket 名称",
+                        "name": "bucket",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "原始文件名",
+                        "name": "filename",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "MIME 类型",
+                        "name": "mime_type",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/files/{id}": {
             "get": {
                 "description": "根据文件记录 ID，返回存储的文件元信息",
@@ -232,6 +374,33 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/v1/files/{id}/presigned": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Files"
+                ],
+                "summary": "获取预签名下载链接",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文件记录 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "过期时间秒，默认600",
+                        "name": "expiry",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
             }
         },
         "/healthz": {
