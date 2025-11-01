@@ -1,0 +1,19 @@
+/* Tailwind v4 入口：引入 Tailwind 并启用动画插件 */
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+/* 自定义全局样式（尽量简化，具体样式交由 Tailwind 原子类与组件封装处理） */
+:root {
+  --app-bg: 255 255 255;
+  --app-fg: 9 9 11;
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+/* 基础排版可通过 Tailwind 类控制，此处不做额外限制 */
