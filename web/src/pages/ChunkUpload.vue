@@ -48,7 +48,7 @@ async function startUpload() {
   <div class="space-y-6">
     <Card>
       <template #header>
-        <h3 class="text-base font-semibold">大文件分块上传示例</h3>
+        <h3 class="text-base font-semibold">大文件分块上传</h3>
       </template>
       <div class="grid gap-3">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
