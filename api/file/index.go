@@ -9,6 +9,9 @@ func RegisterRoutes(v1 *gin.RouterGroup) {
         files.POST("", UploadFile)
         // 上传压缩包，解压后批量存储文件
         files.POST("/archive", UploadArchive)
+        // 压缩包分块上传（解决大文件上传问题）
+        files.POST("/archive/multipart/init", InitArchiveChunkUpload)
+        files.POST("/archive/multipart/chunk", UploadArchiveChunk)
         files.GET(":id", GetFile)
         files.GET(":id/download", DownloadFile)
         // 大文件分块上传
