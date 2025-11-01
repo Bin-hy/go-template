@@ -199,6 +199,118 @@ paths:
       summary: 获取预签名下载链接
       tags:
       - Files
+  /api/v1/files/archive:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 接收 zip 压缩包，解压后将位于根目录或一级目录内的文件上传到指定 Bucket；多级嵌套（深层目录）文件将被跳过。
+      parameters:
+      - description: MinIO Bucket 名称
+        in: formData
+        name: bucket
+        required: true
+        type: string
+      - description: zip 压缩包文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上传压缩包并存储其中的文件（跳过深层目录）
+      tags:
+      - Files
+  /api/v1/files/archive/multipart/chunk:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 初始化返回的会话ID
+        in: formData
+        name: upload_id
+        required: true
+        type: string
+      - description: 当前分片序号（从1开始）
+        in: formData
+        name: chunk_index
+        required: true
+        type: integer
+      - description: 分片总数
+        in: formData
+        name: total_chunks
+        required: true
+        type: integer
+      - description: 分片文件
+        in: formData
+        name: chunk
+        required: true
+        type: file
+      - description: Bucket（可冗余）
+        in: formData
+        name: bucket
+        type: string
+      - description: 原始文件名（可冗余）
+        in: formData
+        name: filename
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 上传压缩包分片
+      tags:
+      - Files
+  /api/v1/files/archive/multipart/init:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 返回会话ID，后续使用 /api/v1/files/archive/multipart/chunk 上传分片
+      parameters:
+      - description: Bucket 名称
+        in: formData
+        name: bucket
+        required: true
+        type: string
+      - description: 原始压缩包文件名
+        in: formData
+        name: filename
+        required: true
+        type: string
+      - description: MIME 类型
+        in: formData
+        name: mime_type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: 初始化压缩包分块上传
+      tags:
+      - Files
   /api/v1/files/bucket/{bucket}:
     get:
       parameters:

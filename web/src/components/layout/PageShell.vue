@@ -7,6 +7,7 @@
           <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/">首页</RouterLink>
           <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/files">模型上传</RouterLink>
           <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/upload-chunks">模型分块上传</RouterLink>
+          <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/archive-upload">压缩包上传</RouterLink>
           <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/buckets">Bucket 列表</RouterLink>
           <RouterLink class="px-3 py-1 rounded-md hover:bg-white/10" to="/swagger">Swagger 文档</RouterLink>
         </nav>
