@@ -7,6 +7,7 @@
           <RouterLink class="hover:underline" to="/">首页</RouterLink>
           <!-- <RouterLink class="hover:underline" to="/health">健康检查</RouterLink> -->
           <RouterLink class="hover:underline" to="/files">文件上传</RouterLink>
+          <RouterLink class="hover:underline" to="/upload-chunks">分块上传示例</RouterLink>
           <RouterLink class="hover:underline" to="/swagger">Swagger 文档</RouterLink>
         </nav>
       </div>

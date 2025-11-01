@@ -50,9 +50,7 @@ async function doHardDelete() {
       <div v-if="modelUrl" class="mt-4 grid gap-2">
         <div class="text-sm text-gray-600">模型地址（基于 bucket 手动区分）：</div>
         <a :href="modelUrl" target="_blank" class="text-blue-600 hover:underline break-all">{{ modelUrl }}</a>
-        <div>
-          <Button size="sm" variant="outline" @click="navigator.clipboard.writeText(modelUrl)">复制地址</Button>
-        </div>
+
       </div>
     </Card>
 
